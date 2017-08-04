@@ -3,8 +3,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/tracer"
 )
@@ -35,4 +37,11 @@ func main() {
 
 	m.Login(*remoteUsername, *remotePassword)
 
+	m.SystemInfo(infoResponse)
+
+}
+
+func infoResponse(i model.SystemInfo) {
+	fmt.Println("INFORESPONSE")
+	fmt.Println(i)
 }
