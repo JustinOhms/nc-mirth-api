@@ -3,7 +3,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
 	"github.com/caimeo/iniflags"
@@ -11,11 +10,12 @@ import (
 )
 
 //“https://localhost:443/mirth/api/3.5.0/”
-var remote_server = flag.String("server", "localhost", "The remote server name")
-var remote_port = flag.String("port", "443", "The remote server port")
-var remote_API_version = flag.String("api_version", "3.5.0", "The remote Mirth server API version")
-var remote_username = flag.String("username", "", "The remote user name")
-var remote_password = flag.String("password", "", "The remote password")
+var remoteServer = flag.String("server", "localhost", "The remote server name")
+var remotePort = flag.String("port", "443", "The remote server port")
+var remoteAPIVersion = flag.String("api_version", "3.5.0", "The remote Mirth server API version")
+var remoteUsername = flag.String("username", "", "The remote user name")
+var remotePassword = flag.String("password", "", "The remote password")
+var tlsVerify = flag.Bool("tls", true, "Is TLS verfify on")
 var verboseMode = flag.Bool("verbose", false, "Verbose console output.")
 
 var t tracer.Tracer
@@ -30,9 +30,9 @@ func main() {
 	t.Always("Mirth API")
 	mirthagent.Tracer = *t
 
-	m := mirthagent.New(*remote_server, *remote_port)
+	m := mirthagent.New(*remoteServer, *remotePort)
+	m.TLSVerify = *tlsVerify
 
-	fmt.Println(m)
-	m.Login(*remote_username, *remote_password)
+	m.Login(*remoteUsername, *remotePassword)
 
 }

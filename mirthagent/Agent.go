@@ -15,13 +15,14 @@ type Agent struct {
 	Server     string
 	Port       string
 	CookieFile string
+	TLSVerify  bool
 	Jar        http.CookieJar
 	request    *gorequest.SuperAgent
 }
 
 func New(server string, port string) *Agent {
 	a := Agent{Server: server, Port: port}
-
+	a.TLSVerify = true
 	a.Request()
 	return &a
 }
