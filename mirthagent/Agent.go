@@ -12,17 +12,21 @@ import (
 const defaultCookieFile = "cookies.cook"
 
 type Agent struct {
-	Server     string
-	Port       string
-	CookieFile string
-	TLSVerify  bool
-	Jar        http.CookieJar
-	request    *gorequest.SuperAgent
+	Server      string
+	Port        string
+	CookieFile  string
+	TLSVerify   bool
+	Jar         http.CookieJar
+	request     *gorequest.SuperAgent
+	userName    string
+	password    string
+	loginStatus bool
 }
 
 func New(server string, port string) *Agent {
 	a := Agent{Server: server, Port: port}
 	a.TLSVerify = true
+	a.loginStatus = false
 	a.Request()
 	return &a
 }
