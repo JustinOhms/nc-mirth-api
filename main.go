@@ -37,11 +37,15 @@ func main() {
 
 	m.Login(*remoteUsername, *remotePassword)
 
-	m.SystemInfo(infoResponse)
+	m.SystemInfo(handleError, infoResponse)
 
 }
 
 func infoResponse(i model.SystemInfo) {
 	fmt.Println("INFORESPONSE")
 	fmt.Println(i)
+}
+
+func handleError(e error) {
+	fmt.Println(e.Error())
 }

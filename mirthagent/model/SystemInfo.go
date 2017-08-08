@@ -8,5 +8,3 @@ type SystemInfo struct {
 	DBName         string `xml:"dbName"`
 	DBVersion      string `xml:"dbVersion"`
 }
-
-type SystemInfoCallback func(SystemInfo)
