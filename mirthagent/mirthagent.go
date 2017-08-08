@@ -1,8 +1,8 @@
 package mirthagent
 
 import (
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/handle"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/errorhandler"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/extendederror"
 	"github.com/caimeo/stickyjar/tracer"
 	"github.com/parnurzeal/gorequest"
 )
@@ -22,9 +22,9 @@ func check(e error) {
 	}
 }
 
-func errorCheck(onErr handle.Error, errs []error, text string) bool {
+func errorCheck(onErr errorhandler.Handler, errs []error, text string) bool {
 	if len(errs) > 0 {
-		onErr(*model.NewRequestError(text, errs))
+		onErr(*extendederror.New(text, errs))
 		return true
 	}
 	return false

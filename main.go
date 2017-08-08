@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/systeminfo"
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/tracer"
 )
@@ -41,7 +41,7 @@ func main() {
 
 }
 
-func infoResponse(i model.SystemInfo) {
+func infoResponse(i systeminfo.SystemInfo) {
 	fmt.Println("INFORESPONSE")
 	fmt.Println(i)
 }

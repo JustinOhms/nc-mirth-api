@@ -1,13 +1,13 @@
 package mirthagent
 
 import (
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/handle"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/parse"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/errorhandler"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/systeminfo"
 
 	"github.com/parnurzeal/gorequest"
 )
 
-func (a *Agent) SystemInfo(onErr handle.Error, onData handle.SystemInfo) {
+func (a *Agent) SystemInfo(onErr errorhandler.Handler, onData systeminfo.Handler) {
 	a.request.Get(a.infoPath())
 	f := func(r gorequest.Response, b []byte, e []error) {
 		a.systemInfoResponder(onErr, onData, r, b, e)
@@ -15,11 +15,11 @@ func (a *Agent) SystemInfo(onErr handle.Error, onData handle.SystemInfo) {
 	a.request.EndBytes(f)
 }
 
-func (a *Agent) systemInfoResponder(onErr handle.Error, onData handle.SystemInfo, resp gorequest.Response, body []byte, e []error) {
+func (a *Agent) systemInfoResponder(onErr errorhandler.Handler, onData systeminfo.Handler, resp gorequest.Response, body []byte, e []error) {
 	if errorCheck(onErr, e, "System info could not be retrieved") {
 		return
 	}
 	if resp.StatusCode == 200 {
-		onData(parse.SystemInfo(body))
+		onData(systeminfo.XmlParse(body))
 	}
 }

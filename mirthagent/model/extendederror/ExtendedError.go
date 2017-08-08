@@ -1,4 +1,4 @@
-package model
+package extendederror
 
 import (
 	"fmt"
@@ -18,7 +18,9 @@ func (e ExtendedError) Error() string {
 	}
 }
 
-func NewRequestError(text string, cause []error) *ExtendedError {
+func New(text string, cause []error) *ExtendedError {
 	e := ExtendedError{text: text, Cause: cause}
 	return &e
 }
+
+type Handler func(ExtendedError)

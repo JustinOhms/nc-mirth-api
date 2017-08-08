@@ -1,4 +1,8 @@
-package model
+package systeminfo
+
+import (
+	"encoding/xml"
+)
 
 type SystemInfo struct {
 	JVMVersion     string `xml:"jvmVersion"`
@@ -8,3 +12,10 @@ type SystemInfo struct {
 	DBName         string `xml:"dbName"`
 	DBVersion      string `xml:"dbVersion"`
 }
+
+func XmlParse(b []byte) (m SystemInfo) {
+	xml.Unmarshal(b, &m)
+	return m
+}
+
+type Handler func(SystemInfo)
