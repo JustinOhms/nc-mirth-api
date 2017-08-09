@@ -10,12 +10,12 @@ import (
 func (a *Agent) SystemInfo(onErr errorhandler.Handler, onData systeminfo.Handler) {
 	a.request.Get(a.infoPath())
 	f := func(r gorequest.Response, b []byte, e []error) {
-		a.systemInfoResponder(onErr, onData, r, b, e)
+		a.systemInfoHandler(onErr, onData, r, b, e)
 	}
 	a.request.EndBytes(f)
 }
 
-func (a *Agent) systemInfoResponder(onErr errorhandler.Handler, onData systeminfo.Handler, resp gorequest.Response, body []byte, e []error) {
+func (a *Agent) systemInfoHandler(onErr errorhandler.Handler, onData systeminfo.Handler, resp gorequest.Response, body []byte, e []error) {
 	if errorCheck(onErr, e, "System info could not be retrieved") {
 		return
 	}

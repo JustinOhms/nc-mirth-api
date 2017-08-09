@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/channelstatus"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model/systeminfo"
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/tracer"
@@ -32,12 +33,20 @@ func main() {
 	t.Always("Mirth API")
 	mirthagent.Tracer = *t
 
+	mirthagent.TLSVerify = *tlsVerify
 	m := mirthagent.New(*remoteServer, *remotePort)
-	m.TLSVerify = *tlsVerify
 
-	m.Login(*remoteUsername, *remotePassword)
+	login, _, restoreable := m.LoginStatus()
+
+	if !login && !restoreable {
+		m.Login(*remoteUsername, *remotePassword)
+	}
+
+	fmt.Println(m.LoginStatus())
 
 	m.SystemInfo(handleError, infoResponse)
+
+	m.ChannelStatus(handleError, statResponse)
 
 }
 
@@ -48,4 +57,9 @@ func infoResponse(i systeminfo.SystemInfo) {
 
 func handleError(e error) {
 	fmt.Println(e.Error())
+}
+
+func statResponse(i []channelstatus.ChannelStatus) {
+	fmt.Println("CHANNELSTATUS")
+	fmt.Println(i)
 }

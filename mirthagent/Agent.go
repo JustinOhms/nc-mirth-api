@@ -1,11 +1,13 @@
 package mirthagent
 
 import (
+	"crypto/tls"
+	"fmt"
 	"net/http"
-	"os"
-	"path"
 
 	"github.com/caimeo/stickyjar/curljar"
+	"github.com/caimeo/stickyjar/restorable"
+
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -23,9 +25,11 @@ type Agent struct {
 	loginStatus bool
 }
 
+var TLSVerify bool = true
+
 func New(server string, port string) *Agent {
 	a := Agent{Server: server, Port: port}
-	a.TLSVerify = true
+	a.TLSVerify = TLSVerify
 	a.loginStatus = false
 	a.Request()
 	return &a
@@ -40,22 +44,20 @@ func (a *Agent) Request() *gorequest.SuperAgent {
 
 func (a *Agent) newRequest() *gorequest.SuperAgent {
 	r := gorequest.New()
+
+	r.TLSClientConfig(&tls.Config{InsecureSkipVerify: !a.TLSVerify})
+
 	if a.Jar == nil {
 		jar, err := curljar.New(a.cookieFile(), nil)
 		check(err)
 		a.Jar = jar
 	}
 	r.Client.Jar = a.Jar
-	return r
-}
 
-func (a *Agent) cookieFile() string {
-	if a.CookieFile == "" {
-		ex, err := os.Executable()
-		check(err)
-		dir := path.Dir(ex)
-		a.CookieFile = path.Join(dir, defaultCookieFile)
-		Tracer.Verbose(a.CookieFile)
+	if a.hasCookieFile() && a.restorableSession() {
+		fmt.Println("RESTOREING")
+		(a.Jar).(restorable.Restorable).Restore()
 	}
-	return a.CookieFile
+
+	return r
 }
