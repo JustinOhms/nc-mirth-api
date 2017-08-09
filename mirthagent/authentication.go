@@ -6,6 +6,7 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/user"
 	"github.com/caimeo/stickyjar/restorable"
 	"github.com/parnurzeal/gorequest"
 )
@@ -32,8 +33,30 @@ func (a *Agent) Login(username string, password string) {
 	a.request.End(a.loginResp)
 }
 
-func (a *Agent) LoginStatus() (loggedIn bool, userName string, cookie bool) {
-	return a.loginStatus, a.userName, a.hasCookieFile()
+func (a *Agent) connectResp(resp gorequest.Response, body []byte, errs []error) {
+	Tracer.Verbose(strconv.Itoa(resp.StatusCode))
+	Tracer.Verbose(string(body[:]))
+	if resp.StatusCode == 200 {
+		u := user.XmlParse(body)
+		a.userName = u.UserName
+		a.loginStatus = true
+	} else {
+		//if connect fails we clear the cookie file
+		os.Remove(a.cookieFile())
+		a.loginStatus = false
+	}
+
+}
+
+func (a *Agent) Connect() {
+	if a.loginStatus == false && a.restorableSession() {
+		a.request.Get(a.currentUserpath())
+		a.request.EndBytes(a.connectResp)
+	}
+}
+
+func (a *Agent) LoginStatus() (loggedIn bool, userName string, restorable bool) {
+	return a.loginStatus, a.userName, a.restorableSession()
 }
 
 func (a *Agent) cookieFile() string {
@@ -54,5 +77,5 @@ func (a *Agent) hasCookieFile() bool {
 
 func (a *Agent) restorableSession() bool {
 	_, ok := interface{}(a.Jar).(restorable.Restorable)
-	return ok
+	return ok && a.hasCookieFile()
 }

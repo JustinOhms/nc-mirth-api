@@ -35,18 +35,22 @@ func New(server string, port string) *Agent {
 	return &a
 }
 
+//returns the default request object
 func (a *Agent) Request() *gorequest.SuperAgent {
 	if a.request == nil {
-		a.request = a.newRequest()
+		a.request = a.NewRequest()
 	}
+
 	return a.request
 }
 
-func (a *Agent) newRequest() *gorequest.SuperAgent {
+//returns a new request object clone session from default request
+func (a *Agent) NewRequest() *gorequest.SuperAgent {
 	r := gorequest.New()
 
 	r.TLSClientConfig(&tls.Config{InsecureSkipVerify: !a.TLSVerify})
 
+	//if no jar is initialized set the jar
 	if a.Jar == nil {
 		jar, err := curljar.New(a.cookieFile(), nil)
 		check(err)
@@ -54,7 +58,8 @@ func (a *Agent) newRequest() *gorequest.SuperAgent {
 	}
 	r.Client.Jar = a.Jar
 
-	if a.hasCookieFile() && a.restorableSession() {
+	//if we are not logged in and we have a restorable cookie file restore it
+	if a.loginStatus == false && a.restorableSession() {
 		fmt.Println("RESTOREING")
 		(a.Jar).(restorable.Restorable).Restore()
 	}

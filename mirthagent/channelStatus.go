@@ -16,10 +16,22 @@ func (a *Agent) ChannelStatus(onErr errorhandler.Handler, onData channelstatus.H
 }
 
 func (a *Agent) channelStatusHandler(onErr errorhandler.Handler, onData channelstatus.Handler, resp gorequest.Response, body []byte, e []error) {
-	if errorCheck(onErr, e, "Channel status could not be retrieved") {
+	if a.errorCheck(onErr, e, "Channel status could not be retrieved") {
 		return
 	}
-	if resp.StatusCode == 200 {
+
+	if a.responseCheck(onErr, resp) {
 		onData(channelstatus.XmlParse(body))
 	}
+}
+
+func (a *Agent) responseCheck(onErr errorhandler.Handler, resp gorequest.Response) bool {
+	if resp.StatusCode == 200 {
+		return true
+	}
+	if resp.StatusCode == 401 {
+		panic("Unauthorized")
+	}
+
+	return false
 }

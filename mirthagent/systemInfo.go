@@ -16,10 +16,11 @@ func (a *Agent) SystemInfo(onErr errorhandler.Handler, onData systeminfo.Handler
 }
 
 func (a *Agent) systemInfoHandler(onErr errorhandler.Handler, onData systeminfo.Handler, resp gorequest.Response, body []byte, e []error) {
-	if errorCheck(onErr, e, "System info could not be retrieved") {
+	if a.errorCheck(onErr, e, "System info could not be retrieved") {
 		return
 	}
 	if resp.StatusCode == 200 {
 		onData(systeminfo.XmlParse(body))
 	}
+
 }

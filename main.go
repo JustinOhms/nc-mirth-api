@@ -44,9 +44,13 @@ func main() {
 
 	fmt.Println(m.LoginStatus())
 
-	m.SystemInfo(handleError, infoResponse)
+	m.Connect()
 
-	m.ChannelStatus(handleError, statResponse)
+	fmt.Println(m.LoginStatus())
+
+	//m.SystemInfo(handleError, infoResponse)
+
+	//m.ChannelStatus(handleError, statResponse)
 
 }
 
@@ -56,6 +60,7 @@ func infoResponse(i systeminfo.SystemInfo) {
 }
 
 func handleError(e error) {
+	fmt.Println("ERRROR")
 	fmt.Println(e.Error())
 }
 

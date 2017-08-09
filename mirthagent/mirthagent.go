@@ -22,7 +22,7 @@ func check(e error) {
 	}
 }
 
-func errorCheck(onErr errorhandler.Handler, errs []error, text string) bool {
+func (a *Agent) errorCheck(onErr errorhandler.Handler, errs []error, text string) bool {
 	if len(errs) > 0 {
 		onErr(*extendederror.New(text, errs))
 		return true
