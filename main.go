@@ -4,10 +4,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/channelstatus"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/systeminfo"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model/extendederror"
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/tracer"
 )
@@ -28,6 +29,7 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
+	go monitorErrors(mirthagent.CommonErrorChannel())
 	t := tracer.New(*verboseMode)
 
 	t.Always("Mirth API")
@@ -36,35 +38,50 @@ func main() {
 	mirthagent.TLSVerify = *tlsVerify
 	m := mirthagent.New(*remoteServer, *remotePort)
 
-	login, _, restoreable := m.LoginStatus()
+	//login, _, restoreable := m.LoginStatus()
 
-	if !login && !restoreable {
-		m.Login(*remoteUsername, *remotePassword)
+	var connected bool
+	//if !login && !restoreable {
+	connected, ok := <-m.Login(*remoteUsername, *remotePassword)
+	//}
+
+	//ok := <-c
+
+	if connected {
+		fmt.Println("IS OK", ok)
 	}
+	fmt.Println(m.LoginStatus())
+
+	ok2 := <-m.Connect()
+
+	fmt.Println(ok2)
 
 	fmt.Println(m.LoginStatus())
 
-	m.Connect()
+	r, _ := m.SystemInfo()
 
-	fmt.Println(m.LoginStatus())
+	si := <-r
 
-	//m.SystemInfo(handleError, infoResponse)
+	q, _ := m.ChannelStatus()
 
-	//m.ChannelStatus(handleError, statResponse)
+	cs := <-q
 
+	time.Sleep(2 * time.Second)
+	fmt.Println(si)
+	fmt.Println(cs)
+
+	for i, v := range cs {
+		fmt.Println(i, v)
+	}
 }
 
-func infoResponse(i systeminfo.SystemInfo) {
-	fmt.Println("INFORESPONSE")
-	fmt.Println(i)
-}
-
-func handleError(e error) {
-	fmt.Println("ERRROR")
-	fmt.Println(e.Error())
-}
-
-func statResponse(i []channelstatus.ChannelStatus) {
-	fmt.Println("CHANNELSTATUS")
-	fmt.Println(i)
+func monitorErrors(e chan error) {
+	for err := range e {
+		x, ok := interface{}(err).(extendederror.ExtendedError)
+		if ok {
+			fmt.Fprintln(os.Stderr, "EXTENDED ERROR\n", err, "\n", x.Cause())
+		} else {
+			fmt.Fprintln(os.Stderr, "ERROR\n", err)
+		}
+	}
 }

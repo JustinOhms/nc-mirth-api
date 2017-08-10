@@ -20,5 +20,3 @@ func XmlParse(b []byte) []ChannelStatus {
 	xml.Unmarshal(b, &m)
 	return m.Channels
 }
-
-type Handler func([]ChannelStatus)

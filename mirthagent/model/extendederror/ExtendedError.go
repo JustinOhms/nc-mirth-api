@@ -4,23 +4,29 @@ import (
 	"fmt"
 )
 
-type ExtendedError struct {
-	Cause []error
+type ExtendedError interface {
+	Error() string
+	Cause() []error
+}
+
+type extendedError struct {
+	cause []error
 	text  string
 }
 
-func (e ExtendedError) Error() string {
-
+func (e extendedError) Error() string {
 	if e.text == "" {
-		return fmt.Sprintf(e.Cause[0].Error())
+		return fmt.Sprintf(e.cause[0].Error())
 	} else {
 		return e.text
 	}
 }
 
-func New(text string, cause []error) *ExtendedError {
-	e := ExtendedError{text: text, Cause: cause}
-	return &e
+func (e extendedError) Cause() []error {
+	return e.cause
 }
 
-type Handler func(ExtendedError)
+func New(text string, cause []error) *extendedError {
+	e := extendedError{text: text, cause: cause}
+	return &e
+}
