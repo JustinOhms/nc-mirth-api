@@ -14,16 +14,18 @@ import (
 const defaultCookieFile = "cookies.cook"
 
 type Agent struct {
-	Server      string
-	Port        string
-	CookieFile  string
-	TLSVerify   bool
-	Jar         http.CookieJar
+	Server     string
+	Port       string
+	CookieFile string
+	TLSVerify  bool
+	Jar        http.CookieJar
+
 	request     *gorequest.SuperAgent
 	userName    string
 	password    string
 	loginStatus bool
-	Paths       resource.Paths
+
+	Paths resource.Paths
 }
 
 var TLSVerify bool = true

@@ -17,13 +17,11 @@ func (a *Agent) systemInfo(c chan systeminfo.SystemInfo, ec chan error) {
 	defer close(c)
 	defer close(ec)
 
-	a.request.Get(a.Paths.System.Info())
-	r, b, e := a.request.EndBytes()
+	req := a.NewRequest().Get(a.Paths.System.Info())
+	r, b, e := req.EndBytes()
 
 	if responseOrStatusErrors(ec, r, e, "System info could not be retrieved") {
 		return
 	}
-
 	c <- systeminfo.XmlParse(b)
-
 }

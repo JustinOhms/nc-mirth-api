@@ -45,3 +45,7 @@ type channels struct {
 func (c *channels) Statuses() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/statuses?includeUndeployed=true", c.p.server, c.p.port)
 }
+
+func (c *channels) SetIntialState() string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/_setInitialState", c.p.server, c.p.port)
+}
