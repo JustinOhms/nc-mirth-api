@@ -10,92 +10,92 @@ import (
 	"github.com/caimeo/stickyjar/restorable"
 )
 
-func (a *Agent) Login(username string, password string) chan bool {
+func (Ω *Agent) Login(username string, password string) chan bool {
 	c := make(chan bool, 1)
 
-	a.userName = username
+	Ω.userName = username
 
-	go a.login(c, username, password)
+	go Ω.login(c, username, password)
 
 	return c
 }
 
-func (a *Agent) login(c chan bool, username string, password string) {
-	a.userName = username
-	a.password = password
+func (Ω *Agent) login(c chan bool, username string, password string) {
+	Ω.userName = username
+	Ω.password = password
 
-	a.request.Type("form-data")
-	a.request.Post(a.Paths.Users.Login())
-	a.request.Send(fmt.Sprintf("username=%s", a.userName))
-	a.request.Send(fmt.Sprintf("password=%s", a.password))
+	Ω.request.Type("form-data")
+	Ω.request.Post(Ω.Paths.Users.Login())
+	Ω.request.Send(fmt.Sprintf("username=%s", Ω.userName))
+	Ω.request.Send(fmt.Sprintf("password=%s", Ω.password))
 
-	traceCurl(a.request)
+	traceCurl(Ω.request)
 
-	r, b, _ := a.request.End()
+	r, b, _ := Ω.request.End()
 
 	Tracer.Verbose(strconv.Itoa(r.StatusCode))
 	Tracer.Verbose(b)
 	if r.StatusCode == 200 {
-		a.loginStatus = true
+		Ω.loginStatus = true
 		c <- true
 	} else {
-		a.loginStatus = false
+		Ω.loginStatus = false
 		c <- false
 	}
 	close(c)
 }
 
-func (a *Agent) Connect() chan bool {
+func (Ω *Agent) Connect() chan bool {
 	c := make(chan bool, 1)
-	if a.loginStatus == false && a.restorableSession() {
-		go a.connect(c)
+	if Ω.loginStatus == false && Ω.restorableSession() {
+		go Ω.connect(c)
 	} else {
 		c <- false
 	}
 	return c
 }
 
-func (a *Agent) connect(c chan bool) {
-	a.request.Get(a.Paths.Users.Login())
-	r, b, _ := a.request.EndBytes()
+func (Ω *Agent) connect(c chan bool) {
+	Ω.request.Get(Ω.Paths.Users.Login())
+	r, b, _ := Ω.request.EndBytes()
 
 	Tracer.Verbose(strconv.Itoa(r.StatusCode))
 	Tracer.Verbose(string(b[:]))
 	if r.StatusCode == 200 {
 		u := user.XmlParse(b)
-		a.userName = u.UserName
-		a.loginStatus = true
+		Ω.userName = u.UserName
+		Ω.loginStatus = true
 		c <- true
 	} else {
 		//if connect fails we clear the cookie file
-		os.Remove(a.cookieFile())
-		a.loginStatus = false
+		os.Remove(Ω.cookieFile())
+		Ω.loginStatus = false
 		c <- false
 	}
 	close(c)
 }
 
-func (a *Agent) LoginStatus() (loggedIn bool, userName string, restorable bool) {
-	return a.loginStatus, a.userName, a.restorableSession()
+func (Ω *Agent) LoginStatus() (loggedIn bool, userName string, restorable bool) {
+	return Ω.loginStatus, Ω.userName, Ω.restorableSession()
 }
 
-func (a *Agent) cookieFile() string {
-	if a.CookieFile == "" {
+func (Ω *Agent) cookieFile() string {
+	if Ω.CookieFile == "" {
 		ex, err := os.Executable()
 		checkErrorAndPanic(err)
 		dir := path.Dir(ex)
-		a.CookieFile = path.Join(dir, defaultCookieFile)
-		Tracer.Verbose(a.CookieFile)
+		Ω.CookieFile = path.Join(dir, defaultCookieFile)
+		Tracer.Verbose(Ω.CookieFile)
 	}
-	return a.CookieFile
+	return Ω.CookieFile
 }
 
-func (a *Agent) hasCookieFile() bool {
-	_, err := os.Stat(a.cookieFile())
+func (Ω *Agent) hasCookieFile() bool {
+	_, err := os.Stat(Ω.cookieFile())
 	return (err == nil)
 }
 
-func (a *Agent) restorableSession() bool {
-	_, ok := interface{}(a.Jar).(restorable.Restorable)
-	return ok && a.hasCookieFile()
+func (Ω *Agent) restorableSession() bool {
+	_, ok := interface{}(Ω.Jar).(restorable.Restorable)
+	return ok && Ω.hasCookieFile()
 }

@@ -32,7 +32,8 @@ var TLSVerify bool = true
 
 func New(server string, port string) *Agent {
 	a := Agent{Server: server, Port: port}
-	a.Paths = resource.New(server, port)
+	a.Paths = resource.PathsNew(server, port)
+
 	a.TLSVerify = TLSVerify
 	a.loginStatus = false
 	a.Request()
