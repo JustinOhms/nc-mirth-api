@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/extendederror"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/caimeo/stickyjar/tracer"
 	"github.com/parnurzeal/gorequest"
 )
@@ -55,7 +55,7 @@ func CheckErrorAndChannelLog(e error, ec chan error) {
 
 func ResponseErrors(ec chan error, errs []error, text string) bool {
 	if len(errs) > 0 {
-		e := *extendederror.New(text, errs)
+		e := *model.NewExtendedError(text, errs)
 		CheckErrorAndChannelLog(e, ec)
 		return true
 	}
@@ -68,7 +68,7 @@ func StatusErrors(ec chan error, r gorequest.Response, text string) bool {
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(r.Body)
 		ea = append(ea, errors.New(buf.String()))
-		e := *extendederror.New(text, ea)
+		e := *model.NewExtendedError(text, ea)
 		CheckErrorAndChannelLog(e, ec)
 		return true
 	}

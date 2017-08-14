@@ -1,15 +1,15 @@
-package user
+package model
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+)
 
 type User struct {
 	Id       string `xml:"id"`
 	UserName string `xml:"username"`
 }
 
-func XmlParse(b []byte) (m User) {
+func UserFromXml(b []byte) (m User) {
 	xml.Unmarshal(b, &m)
 	return m
 }
-
-type Handler func(User)

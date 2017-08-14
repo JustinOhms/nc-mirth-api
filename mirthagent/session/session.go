@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/user"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/resource"
 	"github.com/caimeo/stickyjar/curljar"
 	"github.com/caimeo/stickyjar/restorable"
@@ -150,7 +150,7 @@ func (Ω *Session) connect(c chan bool, ec chan error) {
 	f.Tracer.Verbose(string(b[:]))
 
 	if r.StatusCode == 200 {
-		u := user.XmlParse(b)
+		u := model.UserFromXml(b)
 		Ω.userName = u.UserName
 		Ω.loginStatus = true
 		c <- true

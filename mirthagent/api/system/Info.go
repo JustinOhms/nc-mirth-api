@@ -1,33 +1,18 @@
 package system
 
 import (
-	"encoding/xml"
-
 	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 )
 
-type Info struct {
-	JVMVersion     string `xml:"jvmVersion"`
-	OSName         string `xml:"osName"`
-	OSVersion      string `xml:"osVersion"`
-	OSArchitecture string `xml:"osArchitecture"`
-	DBName         string `xml:"dbName"`
-	DBVersion      string `xml:"dbVersion"`
-}
-
-func InfoXmlParse(b []byte) (m Info) {
-	xml.Unmarshal(b, &m)
-	return m
-}
-
-func (Ω *System) Info() (chan Info, chan error) {
-	c := make(chan Info, 1)
+func (Ω *System) Info() (chan model.SystemInfo, chan error) {
+	c := make(chan model.SystemInfo, 1)
 	ec := make(chan error, 1)
 	go Ω.info(c, ec)
 	return c, ec
 }
 
-func (Ω *System) info(c chan Info, ec chan error) {
+func (Ω *System) info(c chan model.SystemInfo, ec chan error) {
 	defer close(c)
 	defer close(ec)
 	req := Ω.Session.NewRequest().Get(Ω.Session.Paths.System.Info())
@@ -35,5 +20,5 @@ func (Ω *System) info(c chan Info, ec chan error) {
 	if f.ResponseOrStatusErrors(ec, r, e, "System info could not be retrieved") {
 		return
 	}
-	c <- InfoXmlParse(b)
+	c <- model.SystemInfoFromXml(b)
 }

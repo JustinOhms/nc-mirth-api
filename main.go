@@ -9,7 +9,7 @@ import (
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model/extendederror"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/tracer"
 )
@@ -67,7 +67,7 @@ func main() {
 
 	si := <-r
 
-	q, _ := a.ChannelStatus()
+	q, _ := a.API.Channel.Status()
 
 	cs := <-q
 
@@ -82,7 +82,7 @@ func main() {
 
 func monitorErrors(e chan error) {
 	for err := range e {
-		x, ok := interface{}(err).(extendederror.ExtendedError)
+		x, ok := interface{}(err).(model.ExtendedError)
 		if ok {
 			fmt.Fprintln(os.Stderr, "EXTENDED ERROR\n", err, "\n", x.Cause())
 		} else {

@@ -1,8 +1,6 @@
-package channelstatus
+package model
 
-import (
-	"encoding/xml"
-)
+import "encoding/xml"
 
 type ChannelStatus struct {
 	ChannelId string `xml:"channelId"`
@@ -15,7 +13,7 @@ type multiChannelStatus struct {
 	Channels []ChannelStatus `xml:"dashboardStatus"`
 }
 
-func XmlParse(b []byte) []ChannelStatus {
+func ChannelStatusFromXml(b []byte) []ChannelStatus {
 	m := multiChannelStatus{}
 	xml.Unmarshal(b, &m)
 	return m.Channels

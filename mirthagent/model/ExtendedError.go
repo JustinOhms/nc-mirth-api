@@ -1,4 +1,4 @@
-package extendederror
+package model
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func (e extendedError) Cause() []error {
 	return e.cause
 }
 
-func New(text string, cause []error) *extendedError {
+func NewExtendedError(text string, cause []error) *extendedError {
 	e := extendedError{text: text, cause: cause}
 	return &e
 }
