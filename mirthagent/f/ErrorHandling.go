@@ -63,7 +63,7 @@ func ResponseErrors(ec chan error, errs []error, text string) bool {
 }
 
 func StatusErrors(ec chan error, r gorequest.Response, text string) bool {
-	if r.StatusCode != 200 {
+	if r.StatusCode > 299 || r.StatusCode < 200 {
 		var ea []error
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(r.Body)

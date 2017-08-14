@@ -74,15 +74,12 @@ func main() {
 	}
 
 	//get system info
-	r, _ := a.API.System.Info()
-	si := <-r
+	siCh, _ := a.API.System.Info()
+	si := <-siCh
 
 	//get channel status
-	q, _ := a.API.Channel.Status()
-	cs := <-q
-
-	//wait a bit for channels to clear
-	time.Sleep(1 * time.Second)
+	csCh, _ := a.API.Channel.Status()
+	cs := <-csCh
 
 	//output the system info
 	fmt.Println(si)
@@ -91,6 +88,17 @@ func main() {
 	for i, v := range cs {
 		fmt.Println(i, v)
 	}
+
+	for i, v := range cs {
+		ceCh, _ := a.API.Channel.Disable(v.ChannelId)
+		ce2 := <-ceCh
+
+		fmt.Println(i, ce2)
+	}
+
+	//wait a bit for channels to clear
+	time.Sleep(5 * time.Second)
+
 }
 
 func monitorErrors(e chan error) {
