@@ -20,7 +20,9 @@ func (Ω *Channel) setEnable(channelId string, on bool) (chan bool, chan error) 
 	c := make(chan bool, 1)
 	ec := make(chan error, 1)
 	req := Ω.Session.NewRequest().Post(Ω.Session.Paths.Channels.SetEnable())
-	req.Send(fmt.Sprintf("channelId=%s", channelId))
+	if len(channelId) > 0 {
+		req.Send(fmt.Sprintf("channelId=%s", channelId))
+	}
 	req.Send(fmt.Sprintf("enabled=%t", on))
 	go setEnable(req, c, ec)
 	return c, ec

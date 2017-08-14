@@ -89,14 +89,18 @@ func main() {
 		fmt.Println(i, v)
 	}
 
-	for i, v := range cs {
-		ceCh, _ := a.API.Channel.Disable(v.ChannelId)
-		ce2 := <-ceCh
+	//	for i, v := range cs {
+	//		ceCh, _ := a.API.Channel.Disable(v.ChannelId)
+	//		ce2 := <-ceCh
 
-		fmt.Println(i, ce2)
-	}
+	//		fmt.Println(i, ce2)
+	//	}
 
-	//wait a bit for channels to clear
+	ceCh, _ := a.API.Channel.Enable("")
+	ce2 := <-ceCh
+
+	fmt.Println(ce2)
+
 	time.Sleep(5 * time.Second)
 
 }
