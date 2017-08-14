@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model/extendederror"
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/tracer"
@@ -29,20 +30,23 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
-	go monitorErrors(mirthagent.CommonErrorChannel())
+	go monitorErrors(f.CommonErrorChannel())
 	t := tracer.New(*verboseMode)
 
 	t.Always("Mirth API")
-	mirthagent.Tracer = *t
+	f.Tracer = *t
 
 	mirthagent.TLSVerify = *tlsVerify
-	m := mirthagent.New(*remoteServer, *remotePort)
+	a := mirthagent.New(*remoteServer, *remotePort)
 
 	//login, _, restoreable := m.LoginStatus()
 
 	var connected bool
 	//if !login && !restoreable {
-	connected, ok := <-m.Login(*remoteUsername, *remotePassword)
+
+	cch, _ := a.Login(*remoteUsername, *remotePassword)
+
+	connected, ok := <-cch
 	//}
 
 	//ok := <-c
@@ -50,23 +54,24 @@ func main() {
 	if connected {
 		fmt.Println("IS OK", ok)
 	}
-	fmt.Println(m.LoginStatus())
+	fmt.Println(a.LoginStatus())
 
-	ok2 := <-m.Connect()
+	chc, _ := a.Connect()
+	ok2, ok := <-chc
 
 	fmt.Println(ok2)
 
-	fmt.Println(m.LoginStatus())
+	fmt.Println(a.LoginStatus())
 
-	r, _ := m.SystemInfo()
+	r, _ := a.API.System.Info() // .SystemInfo()
 
 	si := <-r
 
-	q, _ := m.ChannelStatus()
+	q, _ := a.ChannelStatus()
 
 	cs := <-q
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	fmt.Println(si)
 	fmt.Println(cs)
 
