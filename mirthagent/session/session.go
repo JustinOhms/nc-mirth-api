@@ -139,7 +139,16 @@ func (Ω *Session) connect(c chan bool, ec chan error) {
 	defer close(c)
 	defer close(ec)
 
-	Ω.request.Get(Ω.Paths.Users.Login())
+	if Ω.restorableSession() {
+		Ω.restoreSession()
+	} else {
+		os.Remove(Ω.cookieFile())
+		Ω.loginStatus = false
+		c <- false
+		return
+	}
+
+	Ω.request.Get(Ω.Paths.Users.Current())
 	r, b, e := Ω.request.EndBytes()
 
 	if f.ResponseOrStatusErrors(ec, r, e, "Connnection Problem") {
@@ -185,4 +194,8 @@ func (Ω *Session) hasCookieFile() bool {
 func (Ω *Session) restorableSession() bool {
 	_, ok := interface{}(Ω.Jar).(restorable.Restorable)
 	return ok && Ω.hasCookieFile()
+}
+
+func (Ω *Session) restoreSession() {
+	(Ω.Jar).(restorable.Restorable).Restore()
 }

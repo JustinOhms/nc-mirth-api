@@ -5,5 +5,5 @@ import (
 )
 
 type Channel struct {
-	Session session.Session
+	Session *session.Session
 }

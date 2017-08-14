@@ -30,48 +30,61 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
+	//setup output
 	go monitorErrors(f.CommonErrorChannel())
 	t := tracer.New(*verboseMode)
-
-	t.Always("Mirth API")
 	f.Tracer = *t
+	t.Always("Mirth API")
 
+	//setup MirthAgent
 	mirthagent.TLSVerify = *tlsVerify
 	a := mirthagent.New(*remoteServer, *remotePort)
 
-	//login, _, restoreable := m.LoginStatus()
+	//get the current status
+	_, _, isRestoreable := a.LoginStatus()
 
-	var connected bool
-	//if !login && !restoreable {
+	isConnected := false
 
-	cch, _ := a.Login(*remoteUsername, *remotePassword)
-
-	connected, ok := <-cch
-	//}
-
-	//ok := <-c
-
-	if connected {
-		fmt.Println("IS OK", ok)
+	if isRestoreable {
+		connectCh, _ := a.Connect()
+		isConnected, _ = <-connectCh
 	}
-	fmt.Println(a.LoginStatus())
 
-	chc, _ := a.Connect()
-	ok2, ok := <-chc
+	if isConnected {
+		t.Verbose("Connection Restored: ", isConnected)
+	} else {
+		if len(*remoteUsername) > 0 && len(*remotePassword) > 0 {
+			loginCh, _ := a.Login(*remoteUsername, *remotePassword)
+			isConnected, _ = <-loginCh
+			if isConnected {
+				t.Verbose("Connection New: ", isConnected)
+			}
+		} else {
+			t.Always("Cannot connect, user name and password required.")
+			os.Exit(1)
+		}
+	}
 
-	fmt.Println(ok2)
+	if isConnected {
+		t.Verbose("Ready")
+		fmt.Println(a.LoginStatus())
+	} else {
+		t.Always("Cannot connect")
+		os.Exit(2)
+	}
 
-	fmt.Println(a.LoginStatus())
-
-	r, _ := a.API.System.Info() // .SystemInfo()
-
+	//get system info
+	r, _ := a.API.System.Info()
 	si := <-r
 
+	//get channel status
 	q, _ := a.API.Channel.Status()
-
 	cs := <-q
 
+	//wait a bit for channels to clear
 	time.Sleep(1 * time.Second)
+
+	//output the system info
 	fmt.Println(si)
 	fmt.Println(cs)
 

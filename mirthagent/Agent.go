@@ -18,8 +18,9 @@ var TLSVerify bool = true
 func New(server string, port string) *Agent {
 	session.TLSVerify = TLSVerify
 	a := Agent{}
-	a.session = session.New(server, port)
-	a.API = api.New(a.session)
+	s := session.New(server, port)
+	a.session = s
+	a.API = api.New(s)
 	return &a
 }
 
@@ -37,8 +38,9 @@ func (Ω *Agent) Login(username string, password string) (chan bool, chan error)
 	return Ω.session.Login(username, password)
 }
 
-func (Ω *Agent) Connect() (chan bool, chan error) {
-	return Ω.session.Connect()
+func (Ω *Agent) Connect() (b chan bool, e chan error) {
+	b, e = Ω.session.Connect()
+	return
 }
 
 func (Ω *Agent) LoginStatus() (loggedIn bool, userName string, restorable bool) {

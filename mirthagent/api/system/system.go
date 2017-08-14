@@ -5,5 +5,5 @@ import (
 )
 
 type System struct {
-	Session session.Session
+	Session *session.Session
 }

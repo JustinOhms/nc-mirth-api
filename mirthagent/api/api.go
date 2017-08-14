@@ -14,7 +14,7 @@ type API struct {
 
 func New(s *session.Session) *API {
 	api := API{Session: s}
-	api.System = system.System{Session: *s}
-	api.Channel = channel.Channel{Session: *s}
+	api.System = system.System{Session: s}
+	api.Channel = channel.Channel{Session: s}
 	return &api
 }
