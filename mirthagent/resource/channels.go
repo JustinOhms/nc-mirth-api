@@ -17,3 +17,11 @@ func (Ω *channels) SetIntialState() string {
 func (Ω *channels) SetEnable() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/_setEnabled", Ω.p.server, Ω.p.port)
 }
+
+func (Ω *channels) Deploy() string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/_deploy", Ω.p.server, Ω.p.port)
+}
+
+func (Ω *channels) Undeploy() string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/_undeploy", Ω.p.server, Ω.p.port)
+}
