@@ -18,3 +18,11 @@ func ChannelStatusFromXml(b []byte) []ChannelStatus {
 	xml.Unmarshal(b, &m)
 	return m.Channels
 }
+
+func ChannelStatusArrayToMap(a []ChannelStatus) map[string]ChannelStatus {
+	m := make(map[string]ChannelStatus)
+	for _, cs := range a {
+		m[cs.ChannelId] = cs
+	}
+	return m
+}

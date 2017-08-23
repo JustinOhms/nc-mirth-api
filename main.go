@@ -102,6 +102,10 @@ func main() {
 
 	fmt.Println(ce2)
 
+	ce3 := model.ChannelStatusArrayToMap(cs)
+
+	fmt.Println(ce3)
+
 	time.Sleep(5 * time.Second)
 
 }
