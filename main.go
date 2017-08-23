@@ -11,7 +11,7 @@ import (
 	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/caimeo/iniflags"
-	"github.com/caimeo/stickyjar/tracer"
+	"github.com/caimeo/stickyjar/simple"
 )
 
 //“https://localhost:443/mirth/api/3.5.0/”
@@ -23,7 +23,7 @@ var remotePassword = flag.String("password", "", "The remote password")
 var tlsVerify = flag.Bool("tls", true, "Is TLS verfify on")
 var verboseMode = flag.Bool("verbose", false, "Verbose console output.")
 
-var t tracer.Tracer
+var con *simple.Console
 
 func main() {
 	iniflags.SetConfigFile(".settings")
@@ -32,9 +32,9 @@ func main() {
 
 	//setup output
 	go monitorErrors(f.CommonErrorChannel())
-	t := tracer.New(*verboseMode)
-	f.Tracer = *t
-	t.Always("Mirth API")
+	con := simple.NewConsole(*verboseMode)
+	f.Console = con
+	con.Always("Mirth API")
 
 	//setup MirthAgent
 	mirthagent.TLSVerify = *tlsVerify
@@ -51,25 +51,25 @@ func main() {
 	}
 
 	if isConnected {
-		t.Verbose("Connection Restored: ", isConnected)
+		con.Verbose("Connection Restored: ", isConnected)
 	} else {
 		if len(*remoteUsername) > 0 && len(*remotePassword) > 0 {
 			loginCh, _ := a.Login(*remoteUsername, *remotePassword)
 			isConnected, _ = <-loginCh
 			if isConnected {
-				t.Verbose("Connection New: ", isConnected)
+				con.Verbose("Connection New: ", isConnected)
 			}
 		} else {
-			t.Always("Cannot connect, user name and password required.")
+			con.Always("Cannot connect, user name and password required.")
 			os.Exit(1)
 		}
 	}
 
 	if isConnected {
-		t.Verbose("Ready")
+		con.Verbose("Ready")
 		fmt.Println(a.LoginStatus())
 	} else {
-		t.Always("Cannot connect")
+		con.Always("Cannot connect")
 		os.Exit(2)
 	}
 

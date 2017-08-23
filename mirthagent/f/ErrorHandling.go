@@ -5,17 +5,17 @@ import (
 	"errors"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
-	"github.com/caimeo/stickyjar/tracer"
+	"github.com/caimeo/stickyjar/simple"
 	"github.com/parnurzeal/gorequest"
 )
 
-var Tracer tracer.Tracer
+var Console *simple.Console
 var commonErrorChannel chan error
 
 func TraceCurl(r *gorequest.SuperAgent) {
-	if Tracer.IsVerbose() {
+	if Console.IsVerbose() {
 		cmd, _ := r.AsCurlCommand()
-		Tracer.Verbose(cmd)
+		Console.Verbose(cmd)
 	}
 }
 

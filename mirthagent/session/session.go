@@ -110,8 +110,8 @@ func (Ω *Session) login(c chan bool, ec chan error, username string, password s
 		return
 	}
 
-	f.Tracer.Verbose(strconv.Itoa(r.StatusCode))
-	f.Tracer.Verbose(b)
+	f.Console.Verbose(strconv.Itoa(r.StatusCode))
+	f.Console.Verbose(b)
 
 	if r.StatusCode == 200 {
 		Ω.loginStatus = true
@@ -155,8 +155,8 @@ func (Ω *Session) connect(c chan bool, ec chan error) {
 		return
 	}
 
-	f.Tracer.Verbose(strconv.Itoa(r.StatusCode))
-	f.Tracer.Verbose(string(b[:]))
+	f.Console.Verbose(strconv.Itoa(r.StatusCode))
+	f.Console.Verbose(string(b[:]))
 
 	if r.StatusCode == 200 {
 		u := model.UserFromXml(b)
@@ -181,7 +181,7 @@ func (Ω *Session) cookieFile() string {
 		f.CheckErrorAndPanic(err)
 		dir := path.Dir(ex)
 		Ω.CookieFile = path.Join(dir, defaultCookieFile)
-		f.Tracer.Verbose(Ω.CookieFile)
+		f.Console.Verbose(Ω.CookieFile)
 	}
 	return Ω.CookieFile
 }
