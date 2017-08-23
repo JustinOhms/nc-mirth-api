@@ -3,7 +3,7 @@ package channel
 import (
 	"fmt"
 
-	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -26,7 +26,7 @@ func deploy(req *gorequest.SuperAgent, c chan bool, ec chan error) {
 	defer close(c)
 	defer close(ec)
 	r, _, e := req.EndBytes()
-	if f.ResponseOrStatusErrors(ec, r, e, "Error deploying channel(s)") {
+	if ƒ.ResponseOrStatusErrors(ec, r, e, "Error deploying channel(s)") {
 		return
 	}
 	c <- true

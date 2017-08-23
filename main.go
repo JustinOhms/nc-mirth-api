@@ -8,8 +8,9 @@ import (
 	"time"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/f"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
+
 	"github.com/caimeo/iniflags"
 	"github.com/caimeo/stickyjar/simple"
 )
@@ -31,9 +32,9 @@ func main() {
 	iniflags.Parse()
 
 	//setup output
-	go monitorErrors(f.CommonErrorChannel())
+	go monitorErrors(ƒ.CommonErrorChannel())
 	con := simple.NewConsole(*verboseMode)
-	f.Console = con
+	ƒ.Console = con
 	con.Always("Mirth API")
 
 	//setup MirthAgent
