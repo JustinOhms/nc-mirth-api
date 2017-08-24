@@ -23,6 +23,7 @@ var remoteUsername = flag.String("username", "", "The remote user name")
 var remotePassword = flag.String("password", "", "The remote password")
 var tlsVerify = flag.Bool("tls", true, "Is TLS verfify on")
 var verboseMode = flag.Bool("verbose", false, "Verbose console output.")
+var debugMode = flag.Bool("debug", false, "Debug console output.")
 
 var con *simple.Console
 
@@ -33,7 +34,7 @@ func main() {
 
 	//setup output
 	go monitorErrors(ƒ.CommonErrorChannel())
-	con := simple.NewConsole(*verboseMode)
+	con := simple.NewConsole(*verboseMode, *debugMode)
 	ƒ.Console = con
 	con.Always("Mirth API")
 
