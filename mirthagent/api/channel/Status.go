@@ -1,8 +1,8 @@
 package channel
 
 import (
+	"github.com/NavigatingCancer/mirth-api/mirthagent/errors"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
 
 	"github.com/parnurzeal/gorequest"
 )
@@ -19,7 +19,7 @@ func status(req *gorequest.SuperAgent, c chan []model.ChannelStatus, ec chan err
 	defer close(c)
 	defer close(ec)
 	r, b, e := req.EndBytes()
-	if ƒ.ResponseOrStatusErrors(ec, r, e, "Channel status could not be retrieved") {
+	if errors.ResponseOrStatusErrors(ec, r, e, "Channel status could not be retrieved") {
 		return
 	}
 	c <- model.ChannelStatusFromXml(b)

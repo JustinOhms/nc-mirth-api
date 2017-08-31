@@ -1,15 +1,16 @@
-package ƒ
+package errors
 
 import (
 	"bytes"
 	"errors"
 
+	"github.com/caimeo/console"
+
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
-	"github.com/caimeo/stickyjar/simple"
 	"github.com/parnurzeal/gorequest"
 )
 
-var Console *simple.Console
+var Console console.Console
 var commonErrorChannel chan error
 
 func TraceCurl(r *gorequest.SuperAgent) {

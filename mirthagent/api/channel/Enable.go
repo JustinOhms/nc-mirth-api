@@ -3,7 +3,7 @@ package channel
 import (
 	"fmt"
 
-	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/errors"
 
 	"github.com/parnurzeal/gorequest"
 )
@@ -33,7 +33,7 @@ func setEnable(req *gorequest.SuperAgent, c chan bool, ec chan error) {
 	defer close(c)
 	defer close(ec)
 	r, _, e := req.EndBytes()
-	if ƒ.ResponseOrStatusErrors(ec, r, e, "Error enableing channel") {
+	if errors.ResponseOrStatusErrors(ec, r, e, "Error enableing channel") {
 		return
 	}
 	c <- true

@@ -8,9 +8,9 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/NavigatingCancer/mirth-api/mirthagent/errors"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/resource"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
 	"github.com/caimeo/stickyjar/curljar"
 	"github.com/caimeo/stickyjar/restorable"
 	"github.com/parnurzeal/gorequest"
@@ -65,7 +65,7 @@ func (Ω *Session) NewRequest() *gorequest.SuperAgent {
 	//if no jar is initialized set the jar
 	if Ω.Jar == nil {
 		jar, err := curljar.New(Ω.cookieFile(), nil)
-		ƒ.CheckErrorAndPanic(err)
+		errors.CheckErrorAndPanic(err)
 		Ω.Jar = jar
 	}
 	r.Client.Jar = Ω.Jar
@@ -102,16 +102,16 @@ func (Ω *Session) login(c chan bool, ec chan error, username string, password s
 	Ω.request.Send(fmt.Sprintf("username=%s", Ω.userName))
 	Ω.request.Send(fmt.Sprintf("password=%s", Ω.password))
 
-	ƒ.TraceCurl(Ω.request)
+	errors.TraceCurl(Ω.request)
 
 	r, b, e := Ω.request.End()
 
-	if ƒ.ResponseOrStatusErrors(ec, r, e, "Login Problem") {
+	if errors.ResponseOrStatusErrors(ec, r, e, "Login Problem") {
 		return
 	}
 
-	ƒ.Console.Verbose(strconv.Itoa(r.StatusCode))
-	ƒ.Console.Verbose(b)
+	errors.Console.Verbose(strconv.Itoa(r.StatusCode))
+	errors.Console.Verbose(b)
 
 	if r.StatusCode == 200 {
 		Ω.loginStatus = true
@@ -151,12 +151,12 @@ func (Ω *Session) connect(c chan bool, ec chan error) {
 	Ω.request.Get(Ω.Paths.Users.Current())
 	r, b, e := Ω.request.EndBytes()
 
-	if ƒ.ResponseOrStatusErrors(ec, r, e, "Connnection Problem") {
+	if errors.ResponseOrStatusErrors(ec, r, e, "Connnection Problem") {
 		return
 	}
 
-	ƒ.Console.Verbose(strconv.Itoa(r.StatusCode))
-	ƒ.Console.Verbose(string(b[:]))
+	errors.Console.Verbose(strconv.Itoa(r.StatusCode))
+	errors.Console.Verbose(string(b[:]))
 
 	if r.StatusCode == 200 {
 		u := model.UserFromXml(b)
@@ -178,10 +178,10 @@ func (Ω *Session) LoginStatus() (loggedIn bool, userName string, restorable boo
 func (Ω *Session) cookieFile() string {
 	if Ω.CookieFile == "" {
 		ex, err := os.Executable()
-		ƒ.CheckErrorAndPanic(err)
+		errors.CheckErrorAndPanic(err)
 		dir := path.Dir(ex)
 		Ω.CookieFile = path.Join(dir, defaultCookieFile)
-		ƒ.Console.Verbose(Ω.CookieFile)
+		errors.Console.Verbose(Ω.CookieFile)
 	}
 	return Ω.CookieFile
 }

@@ -1,8 +1,8 @@
 package system
 
 import (
+	"github.com/NavigatingCancer/mirth-api/mirthagent/errors"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -18,7 +18,7 @@ func info(req *gorequest.SuperAgent, c chan model.SystemInfo, ec chan error) {
 	defer close(c)
 	defer close(ec)
 	r, b, e := req.EndBytes()
-	if ƒ.ResponseOrStatusErrors(ec, r, e, "System info could not be retrieved") {
+	if errors.ResponseOrStatusErrors(ec, r, e, "System info could not be retrieved") {
 		return
 	}
 	c <- model.SystemInfoFromXml(b)
