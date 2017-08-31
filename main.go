@@ -8,11 +8,10 @@ import (
 	"time"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/errors"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/ƒ"
-
+	"github.com/caimeo/console"
 	"github.com/caimeo/iniflags"
-	"github.com/caimeo/stickyjar/simple"
 )
 
 //“https://localhost:443/mirth/api/3.5.0/”
@@ -25,7 +24,7 @@ var tlsVerify = flag.Bool("tls", true, "Is TLS verfify on")
 var verboseMode = flag.Bool("verbose", false, "Verbose console output.")
 var debugMode = flag.Bool("debug", false, "Debug console output.")
 
-var con *simple.Console
+var con *console.Console
 
 func main() {
 	iniflags.SetConfigFile(".settings")
@@ -33,9 +32,9 @@ func main() {
 	iniflags.Parse()
 
 	//setup output
-	go monitorErrors(ƒ.CommonErrorChannel())
-	con := simple.NewConsole(*verboseMode, *debugMode)
-	ƒ.Console = con
+	go monitorErrors(errors.CommonErrorChannel())
+	con := console.Init(*verboseMode, *debugMode)
+	errors.Console = con
 	con.Always("Mirth API")
 
 	//setup MirthAgent
