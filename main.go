@@ -80,7 +80,9 @@ func main() {
 
 	//get channel status
 	csCh, _ := a.API.Channel.Status()
-	cs := <-csCh
+	csSlice := <-csCh
+
+	cs := csSlice.Slice
 
 	//output the system info
 	fmt.Println(si)
@@ -102,7 +104,7 @@ func main() {
 
 	fmt.Println(ce2)
 
-	ce3 := model.ChannelStatusArrayToMap(cs)
+	ce3 := csSlice.ToMap()
 
 	fmt.Println(ce3)
 
