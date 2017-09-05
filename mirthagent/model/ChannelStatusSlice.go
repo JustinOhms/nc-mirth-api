@@ -28,6 +28,26 @@ func (Ω *ChannelStatusSlice) Filter(filter ChannelStatusFilter) (chan ChannelSt
 	return o, ctrl
 }
 
+func (Ω ChannelStatusSlice) ChannelIdProviderChannel() (chan ChannelIdProvider, chan bool) {
+	o := make(chan ChannelIdProvider, 1)
+	ctrl := make(chan bool, 1)
+	go func() {
+		for _, v := range Ω.Slice {
+			select {
+			case done := <-ctrl:
+				if done {
+					close(o)
+					close(ctrl)
+				}
+			default:
+				o <- ChannelIdProvider(v)
+			}
+		}
+		close(o)
+	}()
+	return o, ctrl
+}
+
 func (Ω *ChannelStatusSlice) ToMap() map[string]ChannelStatus {
 	return Ω.ToMapById()
 }

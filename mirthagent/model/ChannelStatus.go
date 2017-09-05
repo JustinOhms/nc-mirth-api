@@ -8,6 +8,10 @@ type ChannelStatus struct {
 	State     string `xml:"state"`
 }
 
+func (Ω ChannelStatus) ChannelIdƒ() string {
+	return Ω.ChannelId
+}
+
 type multiChannelStatus struct {
 	XMLName  xml.Name        `xml:"list"`
 	Channels []ChannelStatus `xml:"dashboardStatus"`
