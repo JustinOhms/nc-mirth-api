@@ -1,7 +1,7 @@
 package model
 
 type ChannelId interface {
-	ChannelIdƒ() string
+	ChannelId() string
 }
 
 type ChannelIdIterator interface {
