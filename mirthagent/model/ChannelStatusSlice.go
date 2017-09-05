@@ -86,7 +86,7 @@ func (Ω *ChannelStatusSlice) ToMapById() map[string]ChannelStatus {
 func (Ω *ChannelStatusSlice) ToMapByName() map[string]ChannelStatus {
 	m := make(map[string]ChannelStatus)
 	for _, cc := range Ω.Slice {
-		m[cc.Name] = cc
+		m[cc.Nameø] = cc
 	}
 	return m
 }

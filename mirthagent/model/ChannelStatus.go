@@ -4,13 +4,11 @@ import "encoding/xml"
 
 type ChannelStatus struct {
 	ChannelIdø string `xml:"channelId"`
-	Name       string `xml:"name"`
-	State      string `xml:"state"`
+	Nameø      string `xml:"name"`
+	Stateø     string `xml:"state"`
 }
 
-func (Ω ChannelStatus) ChannelIdƒ() string {
-	return Ω.ChannelIdø
-}
+// ------------------------------------------------
 
 func (Ω ChannelStatus) ChannelId() string {
 	return Ω.ChannelIdø
@@ -19,6 +17,24 @@ func (Ω ChannelStatus) ChannelId() string {
 func (Ω ChannelStatus) SetChannelId(v string) {
 	Ω.ChannelIdø = v
 }
+
+func (Ω ChannelStatus) Name() string {
+	return Ω.Nameø
+}
+
+func (Ω ChannelStatus) SetName(v string) {
+	Ω.Nameø = v
+}
+
+func (Ω ChannelStatus) State() string {
+	return Ω.Stateø
+}
+
+func (Ω ChannelStatus) SetState(v string) {
+	Ω.Stateø = v
+}
+
+// ------------------------------------------------
 
 type multiChannelStatus struct {
 	XMLName  xml.Name        `xml:"list"`
