@@ -1,14 +1,35 @@
 package model
 
 type ChannelStatusSlice struct {
-	Slice   []ChannelStatus
-	Filters channelStatusFilters
+	Slice          []ChannelStatus
+	Filters        channelStatusFilters
+	currentFilters []ChannelStatusFilter
 }
 
-func (Ω *ChannelStatusSlice) Filter(filter ChannelStatusFilter) (chan ChannelStatus, chan bool) {
+//adds a filter to be used by iterators
+func (Ω *ChannelStatusSlice) Filter(filter ChannelStatusFilter) *ChannelStatusSlice {
+	Ω.currentFilters = append(Ω.currentFilters, filter)
+	return Ω
+}
+
+//clears all filters used in iterators
+func (Ω *ChannelStatusSlice) ClearFilters() {
+	Ω.currentFilters = []ChannelStatusFilter{}
+}
+
+func shouldFilterOut(v ChannelStatus, filters []ChannelStatusFilter) bool {
+	for _, f := range filters {
+		if !f(v) {
+			return true
+		}
+	}
+	return false
+}
+
+func (Ω *ChannelStatusSlice) Iterator() (chan ChannelStatus, chan bool) {
 	o := make(chan ChannelStatus, 1)
 	ctrl := make(chan bool, 1)
-	go func() {
+	go func(filters []ChannelStatusFilter) {
 		for _, v := range Ω.Slice {
 			select {
 			case done := <-ctrl:
@@ -17,21 +38,21 @@ func (Ω *ChannelStatusSlice) Filter(filter ChannelStatusFilter) (chan ChannelSt
 					close(ctrl)
 				}
 			default:
-				if filter(v) {
+				if !shouldFilterOut(v, filters) {
 					o <- v
 				}
 
 			}
 		}
 		close(o)
-	}()
+	}(Ω.currentFilters)
 	return o, ctrl
 }
 
-func (Ω ChannelStatusSlice) ChannelIdProviderChannel() (chan ChannelIdProvider, chan bool) {
-	o := make(chan ChannelIdProvider, 1)
+func (Ω ChannelStatusSlice) ChannelIdIterator() (chan ChannelId, chan bool) {
+	o := make(chan ChannelId, 1)
 	ctrl := make(chan bool, 1)
-	go func() {
+	go func(filters []ChannelStatusFilter) {
 		for _, v := range Ω.Slice {
 			select {
 			case done := <-ctrl:
@@ -40,11 +61,13 @@ func (Ω ChannelStatusSlice) ChannelIdProviderChannel() (chan ChannelIdProvider,
 					close(ctrl)
 				}
 			default:
-				o <- ChannelIdProvider(v)
+				if !shouldFilterOut(v, filters) {
+					o <- ChannelId(v)
+				}
 			}
 		}
 		close(o)
-	}()
+	}(Ω.currentFilters)
 	return o, ctrl
 }
 
