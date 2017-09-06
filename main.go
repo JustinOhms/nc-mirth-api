@@ -2,6 +2,7 @@
 package main
 
 import (
+	"encoding/xml"
 	"flag"
 	"fmt"
 	"os"
@@ -75,22 +76,22 @@ func main() {
 	}
 
 	//get system info
-	siCh, _ := a.API.System.Info()
-	si := <-siCh
+	//	siCh, _ := a.API.System.Info()
+	//	si := <-siCh
 
 	//get channel status
-	csCh, _ := a.API.Channel.Status()
-	csSlice := <-csCh
+	//	csCh, _ := a.API.Channel.Status()
+	//	csSlice := <-csCh
 
-	cs := csSlice.Slice
+	//	cs := csSlice.Slice
 
 	//output the system info
-	fmt.Println(si)
-	fmt.Println(cs)
+	//	fmt.Println(si)
+	//	fmt.Println(cs)
 
-	for i, v := range cs {
-		fmt.Println(i, v)
-	}
+	//	for i, v := range cs {
+	//		fmt.Println(i, v)
+	//	}
 
 	//	for i, v := range cs {
 	//		ceCh, _ := a.API.Channel.Disable(v.ChannelId)
@@ -99,14 +100,39 @@ func main() {
 	//		fmt.Println(i, ce2)
 	//	}
 
-	ceCh, _ := a.API.Channel.Enable("")
-	ce2 := <-ceCh
+	//	ceCh, _ := a.API.Channel.Enable("")
+	//	ce2 := <-ceCh
 
-	fmt.Println(ce2)
+	//	fmt.Println(ce2)
 
-	ce3 := csSlice.ToMap()
+	//	ce3 := csSlice.ToMap()
 
-	fmt.Println(ce3)
+	//	fmt.Println(ce3)
+
+	cg := model.ChannelGroup{Versionø: "3.5.0", Idø: "b49f7831-d524-4a02-bb8c-61db3921166b", Nameø: "TEST Name", Descriptionø: "This is the description"}
+
+	c1 := model.ChannelGroupChannel{Versionø: "3.5.0", Idø: "abc"}
+	c2 := model.ChannelGroupChannel{Versionø: "3.5.0", Idø: "xyz"}
+	//	//cg.SetChannels(append(cg.Channels(), c1))
+	//cg.SetChannels(append(cg.Channels(), c2))
+	//	channels := cg.Channels()
+	cg.AppendChannel(c1)
+	cg.AppendChannel(c2)
+	cg.SetName("A different name")
+
+	cg.SetChannels(append(cg.Channels(), c2))
+	//cg.SetChannels(*(append(*(cg.Channels()), c1)))
+	//onsole.Always(ch)
+	//cg.SetChannels(&ch)
+	//	channels = append(channels, c1)
+	//	channels = append(channels, c2)
+	//	cg.SetChannels(channels)
+
+	console.Always(cg)
+
+	x, _ := xml.Marshal(cg)
+
+	console.Always(string(x))
 
 	time.Sleep(5 * time.Second)
 
