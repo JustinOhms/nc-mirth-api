@@ -2,7 +2,10 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 )
+
+const apiVersion = "3.5.0"
 
 type ChannelGroupChannel struct {
 	XMLName  xml.Name `xml:"channel"`
@@ -25,6 +28,24 @@ type ChannelGroup struct {
 	Nameø        string                `xml:"name"`
 	Descriptionø string                `xml:"description"`
 	Channelsø    []ChannelGroupChannel `xml:"channels>channel"`
+}
+
+func NewChannelGroup(id string, name string, description string, channels ChannelIdIterator) ChannelGroup {
+	c := ChannelGroup{Idø: id, Nameø: name, Descriptionø: description, Versionø: apiVersion}
+	c.AddChannels(channels)
+	return c
+}
+
+//Creates a []ChannelGroup from a []ChannelGroupInterface
+func NewChannelGroups(cgis []ChannelGroupInterface) []ChannelGroup {
+	cg := make([]ChannelGroup, 0)
+
+	for _, cgi := range cgis {
+		fmt.Println("CG:", cgi)
+		ngc := NewChannelGroup(cgi.GroupId(), cgi.Name(), cgi.Description(), ChannelIdIterator(cgi))
+		cg = append(cg, ngc)
+	}
+	return cg
 }
 
 func (Ω *ChannelGroup) Id() string {
@@ -64,6 +85,14 @@ func (Ω *ChannelGroup) AppendChannel(v ChannelGroupChannel) {
 }
 
 func (Ω *ChannelGroup) AddChannel(v ChannelId) {
-	c := ChannelGroupChannel{Idø: v.ChannelId(), Versionø: "3.5.0"}
+	c := ChannelGroupChannel{Idø: v.ChannelId(), Versionø: apiVersion}
 	Ω.AppendChannel(c)
+}
+
+func (Ω *ChannelGroup) AddChannels(chIdIt ChannelIdIterator) {
+	c, done := chIdIt.ChannelIdIterator()
+	for v := range c {
+		Ω.AddChannel(v)
+	}
+	done <- true
 }
