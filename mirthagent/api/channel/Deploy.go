@@ -18,7 +18,7 @@ func (Ω *Channel) Deploy(args ...string) (chan bool, chan error) {
 		}
 	}
 	req.Query(fmt.Sprintf("returnErrors=true"))
-	go setEnable(req, c, ec)
+	go deploy(req, c, ec)
 	return c, ec
 }
 

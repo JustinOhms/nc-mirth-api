@@ -25,3 +25,7 @@ func (Ω *channels) Deploy() string {
 func (Ω *channels) Undeploy() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/_undeploy", Ω.p.server, Ω.p.port)
 }
+
+func (Ω *channels) Save(channelId string) string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channels/%s?override=true", Ω.p.server, Ω.p.port, channelId)
+}
