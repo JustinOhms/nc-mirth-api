@@ -5,25 +5,25 @@ import (
 	"github.com/parnurzeal/gorequest"
 )
 
-func (Ω *Server) GlobalScripts(channelId string, channelXmlText []byte) (chan bool, chan error) {
+func (Ω *Server) GlobalScriptsSave(globalScriptsXML []byte) (chan bool, chan error) {
 	c := make(chan bool, 1)
 	ec := make(chan error, 1)
-	url := Ω.Session.Paths.Server
+	url := Ω.Session.Paths.Server.GlobalScripts()
 
 	req := Ω.Session.NewRequest().Put(url)
 	req.Type("xml")
-	req.RawString = string(channelXmlText)
+	req.RawString = string(globalScriptsXML)
 	req.BounceToRawString = true
 
-	go save(req, c, ec)
+	go globalScriptsSave(req, c, ec)
 	return c, ec
 }
 
-func globalScripts(req *gorequest.SuperAgent, c chan bool, ec chan error) {
+func globalScriptsSave(req *gorequest.SuperAgent, c chan bool, ec chan error) {
 	defer close(c)
 	defer close(ec)
 	r, _, e := req.EndBytes()
-	if errors.ResponseOrStatusErrors(ec, r, e, "Error saving channel(s)") {
+	if errors.ResponseOrStatusErrors(ec, r, e, "Error saving global scripts") {
 		return
 	}
 	c <- true
