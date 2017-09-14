@@ -1,12 +1,13 @@
 package resource
 
 type Paths struct {
-	server        string
-	port          string
-	Users         users
-	System        system
-	Channels      channels
-	ChannelGroups channelGroups
+	server                string
+	port                  string
+	Users                 users
+	System                system
+	Channels              channels
+	ChannelGroups         channelGroups
+	CodeTemplateLibraries codeTemplateLibraries
 }
 
 func PathsNew(server string, port string) Paths {
@@ -15,5 +16,6 @@ func PathsNew(server string, port string) Paths {
 	p.System = system{p: &p}
 	p.Channels = channels{p: &p}
 	p.ChannelGroups = channelGroups{p: &p}
+	p.CodeTemplateLibraries = codeTemplateLibraries{p: &p}
 	return p
 }
