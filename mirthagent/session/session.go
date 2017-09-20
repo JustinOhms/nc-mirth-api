@@ -72,7 +72,7 @@ func (Ω *Session) NewRequest() *gorequest.SuperAgent {
 
 	//if we are not logged in and we have a restorable cookie file restore it
 	if Ω.loginStatus == false && Ω.restorableSession() {
-		fmt.Println("RESTOREING")
+		errors.Console.Debug("Restoring Session")
 		(Ω.Jar).(restorable.Restorable).Restore()
 	}
 
@@ -110,8 +110,8 @@ func (Ω *Session) login(c chan bool, ec chan error, username string, password s
 		return
 	}
 
-	errors.Console.Verbose(strconv.Itoa(r.StatusCode))
-	errors.Console.Verbose(b)
+	errors.Console.Debug(strconv.Itoa(r.StatusCode))
+	errors.Console.Debug(b)
 
 	if r.StatusCode == 200 {
 		Ω.loginStatus = true
@@ -155,8 +155,8 @@ func (Ω *Session) connect(c chan bool, ec chan error) {
 		return
 	}
 
-	errors.Console.Verbose(strconv.Itoa(r.StatusCode))
-	errors.Console.Verbose(string(b[:]))
+	errors.Console.Debug(strconv.Itoa(r.StatusCode))
+	errors.Console.Debug(string(b[:]))
 
 	if r.StatusCode == 200 {
 		u := model.UserFromXml(b)

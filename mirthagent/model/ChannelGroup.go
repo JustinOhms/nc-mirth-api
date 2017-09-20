@@ -2,7 +2,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 )
 
 const apiVersion = "3.5.0"
@@ -41,7 +40,6 @@ func NewChannelGroups(cgis []ChannelGroupInterface) []ChannelGroup {
 	cg := make([]ChannelGroup, 0)
 
 	for _, cgi := range cgis {
-		fmt.Println("CG:", cgi)
 		ngc := NewChannelGroup(cgi.GroupId(), cgi.Name(), cgi.Description(), ChannelIdIterator(cgi))
 		cg = append(cg, ngc)
 	}
