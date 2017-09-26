@@ -1,0 +1,3 @@
+[submodule "vendor/github.com/parnurzeal/gorequest"]
+	path = vendor/github.com/parnurzeal/gorequest
+	url = git@github.com:NavigatingCancer/gorequest.git
