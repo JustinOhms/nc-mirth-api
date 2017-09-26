@@ -1,6 +1,9 @@
 package resource
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 type server struct {
 	p *Paths
@@ -8,4 +11,9 @@ type server struct {
 
 func (Ω *server) GlobalScripts() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/server/globalScripts", Ω.p.mirthServerURL, Ω.p.mirthServerPort)
+}
+
+func (Ω *server) ResourceReload(resourceId string) string {
+	escapedId := url.PathEscape(resourceId)
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/server/resources/%s/_reload", Ω.p.mirthServerURL, Ω.p.mirthServerPort, escapedId)
 }
