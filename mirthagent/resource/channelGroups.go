@@ -9,3 +9,7 @@ type channelGroups struct {
 func (Ω *channelGroups) BulkUpdate() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channelgroups/_bulkUpdate?override=false", Ω.p.mirthServerURL, Ω.p.mirthServerPort)
 }
+
+func (Ω *channelGroups) GetList() string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/channelgroups/", Ω.p.mirthServerURL, Ω.p.mirthServerPort)
+}

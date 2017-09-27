@@ -47,7 +47,7 @@ func NewChannelGroups(cgis []ChannelGroupInterface) []ChannelGroup {
 }
 
 func (Ω *ChannelGroup) Id() string {
-	return Ω.Id()
+	return Ω.Idø
 }
 
 func (Ω *ChannelGroup) SetId(v string) {
@@ -93,4 +93,15 @@ func (Ω *ChannelGroup) AddChannels(chIdIt ChannelIdIterator) {
 		Ω.AddChannel(v)
 	}
 	done <- true
+}
+
+type multiChannelGroup struct {
+	XMLName       xml.Name       `xml:"list"`
+	ChannelGroups []ChannelGroup `xml:"channelGroup"`
+}
+
+func ChannelGroupsFromXml(b []byte) []ChannelGroup {
+	m := multiChannelGroup{}
+	xml.Unmarshal(b, &m)
+	return m.ChannelGroups
 }
