@@ -6,7 +6,6 @@ import (
 
 	"github.com/caimeo/console"
 
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -56,7 +55,7 @@ func CheckErrorAndChannelLog(e error, ec chan error) {
 
 func ResponseErrors(ec chan error, errs []error, text string) bool {
 	if len(errs) > 0 {
-		e := *model.NewExtendedError(text, errs)
+		e := *NewExtendedError(text, errs)
 		CheckErrorAndChannelLog(e, ec)
 		return true
 	}
@@ -69,7 +68,7 @@ func StatusErrors(ec chan error, r gorequest.Response, text string) bool {
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(r.Body)
 		ea = append(ea, errors.New(buf.String()))
-		e := *model.NewExtendedError(text, ea)
+		e := *NewExtendedError(text, ea)
 		CheckErrorAndChannelLog(e, ec)
 		return true
 	}

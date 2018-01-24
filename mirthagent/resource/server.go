@@ -21,3 +21,7 @@ func (Ω *server) ResourceReload(resourceId string) string {
 func (Ω *server) ConfigurationMap() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/server/configurationMap", Ω.p.mirthServerURL, Ω.p.mirthServerPort)
 }
+
+func (Ω *server) Resources() string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/3.5.0/server/resources/", Ω.p.mirthServerURL, Ω.p.mirthServerPort)
+}

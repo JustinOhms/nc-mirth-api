@@ -2,21 +2,19 @@
 package main
 
 import (
-	"encoding/xml"
 	"flag"
 	"fmt"
 	"os"
 
 	"github.com/NavigatingCancer/mirth-api/mirthagent"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/errors"
-	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/caimeo/console"
 	"github.com/caimeo/iniflags"
 )
 
 //“https://localhost:443/mirth/api/3.5.0/”
 var remoteServer = flag.String("server", "localhost", "The remote server name")
-var remotePort = flag.String("port", "443", "The remote server port")
+var remotePort = flag.String("port", "40443", "The remote server port")
 var remoteAPIVersion = flag.String("api_version", "3.5.0", "The remote Mirth server API version")
 var remoteUsername = flag.String("username", "", "The remote user name")
 var remotePassword = flag.String("password", "", "The remote password")
@@ -74,22 +72,38 @@ func main() {
 		os.Exit(2)
 	}
 
-	cg := model.ChannelGroup{Versionø: "3.5.0", Idø: "b49f7831-d524-4a02-bb8c-61db3921166b", Nameø: "TEST Name", Descriptionø: "This is the description"}
+	rc, _ := a.API.Server.ResourcesList()
 
-	c1 := model.ChannelGroupChannel{Versionø: "3.5.0", Idø: "abc"}
-	c2 := model.ChannelGroupChannel{Versionø: "3.5.0", Idø: "xyz"}
+	r := <-rc
 
-	cg.AppendChannel(c1)
-	cg.AppendChannel(c2)
-	cg.SetName("A different name")
+	//	cg := model.ChannelGroup{Versionø: "3.5.0", Idø: "b49f7831-d524-4a02-bb8c-61db3921166b", Nameø: "TEST Name", Descriptionø: "This is the description"}
 
-	cg.SetChannels(append(cg.Channels(), c2))
+	//	c1 := model.ChannelGroupChannel{Versionø: "3.5.0", Idø: "abc"}
+	//	c2 := model.ChannelGroupChannel{Versionø: "3.5.0", Idø: "xyz"}
 
-	console.Always(cg)
+	//	cg.AppendChannel(c1)
+	//	cg.AppendChannel(c2)
+	//	cg.SetName("A different name")
 
-	x, _ := xml.Marshal(cg)
+	//	cg.SetChannels(append(cg.Channels(), c2))
 
+	//	console.Always(cg)
+
+	//x, _ := xml.Marshal(cg)
+	console.Always(len(r))
+
+	x := r[0].Id
+	console.Always("- - - - -")
 	console.Always(string(x))
+	console.Always("---------")
+
+	fc, _ := a.API.Server.SetDefaultResourceDirectory("/mnt/mirth/data/java")
+
+	f := <-fc
+
+	console.Always("xxx- - - - -")
+	console.Always(f)
+	console.Always("---------")
 
 	//	time.Sleep(5 * time.Second)
 
@@ -97,7 +111,7 @@ func main() {
 
 func monitorErrors(e chan error) {
 	for err := range e {
-		x, ok := interface{}(err).(model.ExtendedError)
+		x, ok := interface{}(err).(errors.ExtendedError)
 		if ok {
 			fmt.Fprintln(os.Stderr, "EXTENDED ERROR\n", err, "\n", x.Cause())
 		} else {

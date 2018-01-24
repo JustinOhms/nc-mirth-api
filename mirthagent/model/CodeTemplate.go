@@ -15,7 +15,7 @@ type CodeTemplate struct {
 
 type CodeLibraries struct {
 	XMLName   xml.Name      `xml:"list"`
-	Libraries []CodeLibrary `xml:",innerxml`
+	Libraries []CodeLibrary `xml:",innerxml"`
 }
 
 type CodeLibrary struct {
