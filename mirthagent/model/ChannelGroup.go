@@ -4,8 +4,6 @@ import (
 	"encoding/xml"
 )
 
-const apiVersion = "3.5.0"
-
 type ChannelGroupChannel struct {
 	XMLName  xml.Name `xml:"channel"`
 	Versionø string   `xml:"version,attr"`
@@ -30,7 +28,7 @@ type ChannelGroup struct {
 }
 
 func NewChannelGroup(id string, name string, description string, channels ChannelIdIterator) ChannelGroup {
-	c := ChannelGroup{Idø: id, Nameø: name, Descriptionø: description, Versionø: apiVersion}
+	c := ChannelGroup{Idø: id, Nameø: name, Descriptionø: description, Versionø: apiVersion()}
 	c.AddChannels(channels)
 	return c
 }
@@ -83,7 +81,7 @@ func (Ω *ChannelGroup) AppendChannel(v ChannelGroupChannel) {
 }
 
 func (Ω *ChannelGroup) AddChannel(v ChannelId) {
-	c := ChannelGroupChannel{Idø: v.ChannelId(), Versionø: apiVersion}
+	c := ChannelGroupChannel{Idø: v.ChannelId(), Versionø: apiVersion()}
 	Ω.AppendChannel(c)
 }
 

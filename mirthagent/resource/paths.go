@@ -3,6 +3,7 @@ package resource
 type Paths struct {
 	mirthServerURL        string
 	mirthServerPort       string
+	mirthServerVersion    string
 	Users                 users
 	Server                server
 	System                system
@@ -11,8 +12,8 @@ type Paths struct {
 	CodeTemplateLibraries codeTemplateLibraries
 }
 
-func PathsNew(serverURL string, serverPort string) Paths {
-	p := Paths{mirthServerURL: serverURL, mirthServerPort: serverPort}
+func PathsNew(serverURL string, serverPort string, serverVersion string) Paths {
+	p := Paths{mirthServerURL: serverURL, mirthServerPort: serverPort, mirthServerVersion: serverVersion}
 	p.Users = users{p: &p}
 	p.Server = server{p: &p}
 	p.System = system{p: &p}

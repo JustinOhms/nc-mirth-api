@@ -12,7 +12,7 @@ import (
 	"github.com/caimeo/iniflags"
 )
 
-//“https://localhost:443/mirth/api/3.5.0/”
+
 var remoteServer = flag.String("server", "localhost", "The remote server name")
 var remotePort = flag.String("port", "40443", "The remote server port")
 var remoteAPIVersion = flag.String("api_version", "3.5.0", "The remote Mirth server API version")
@@ -37,7 +37,7 @@ func main() {
 
 	//setup MirthAgent
 	mirthagent.TLSVerify = *tlsVerify
-	a := mirthagent.New(*remoteServer, *remotePort)
+	a := mirthagent.New(*remoteServer, *remotePort, *remoteAPIVersion)
 
 	//get the current status
 	_, _, isRestoreable := a.LoginStatus()

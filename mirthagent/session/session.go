@@ -21,6 +21,7 @@ const defaultCookieFile = "cookies.cook"
 type Session struct {
 	Server     string
 	Port       string
+	Version    string
 	CookieFile string
 	TLSVerify  bool
 	Jar        http.CookieJar
@@ -36,9 +37,9 @@ type Session struct {
 
 var TLSVerify bool = true
 
-func New(server string, port string) *Session {
-	c := Session{Server: server, Port: port}
-	c.Paths = resource.PathsNew(server, port)
+func New(server string, port string, version string) *Session {
+	c := Session{Server: server, Port: port, Version: version}
+	c.Paths = resource.PathsNew(server, port, version)
 
 	c.TLSVerify = TLSVerify
 	c.loginStatus = false

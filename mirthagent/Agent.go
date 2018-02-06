@@ -2,6 +2,7 @@ package mirthagent
 
 import (
 	"github.com/NavigatingCancer/mirth-api/mirthagent/api"
+	"github.com/NavigatingCancer/mirth-api/mirthagent/model"
 	"github.com/NavigatingCancer/mirth-api/mirthagent/session"
 	"github.com/parnurzeal/gorequest"
 )
@@ -15,12 +16,13 @@ type Agent struct {
 
 var TLSVerify bool = true
 
-func New(server string, port string) *Agent {
+func New(server string, port string, version string) *Agent {
 	session.TLSVerify = TLSVerify
 	a := Agent{}
-	s := session.New(server, port)
+	s := session.New(server, port, version)
 	a.session = s
 	a.API = api.New(s)
+	model.SetAPIVersion(version)
 	return &a
 }
 
