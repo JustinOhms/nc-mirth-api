@@ -26,6 +26,11 @@ func (Ω *channels) Undeploy() string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/%s/channels/_undeploy", Ω.p.mirthServerURL, Ω.p.mirthServerPort, Ω.p.mirthServerVersion)
 }
 
+func (Ω *channels) RedeployAll() string {
+	return fmt.Sprintf("https://%s:%s/mirth/api/%s/channels/_redeployAll", Ω.p.mirthServerURL, Ω.p.mirthServerPort, Ω.p.mirthServerVersion)
+
+}
+
 func (Ω *channels) Save(channelId string) string {
 	return fmt.Sprintf("https://%s:%s/mirth/api/%s/channels/%s?override=true", Ω.p.mirthServerURL, Ω.p.mirthServerPort, Ω.p.mirthServerVersion, channelId)
 }
